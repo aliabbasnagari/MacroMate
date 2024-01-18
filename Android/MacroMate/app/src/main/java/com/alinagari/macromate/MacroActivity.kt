@@ -35,28 +35,39 @@ class MacroActivity : AppCompatActivity() {
         PORT = intent.getIntExtra("PORT", 0)
         socketMessage("connected")
 
-        val macroBtns: Array<RelativeLayout> = Array(10) { RelativeLayout(this) }
-        macroBtns[0] = binding.btn00
-        macroBtns[1] = binding.btn01
-        macroBtns[2] = binding.btn02
-        macroBtns[3] = binding.btn03
-        macroBtns[4] = binding.btn04
-        macroBtns[5] = binding.btn10
-        macroBtns[6] = binding.btn11
-        macroBtns[7] = binding.btn12
-        macroBtns[8] = binding.btn13
-        macroBtns[9] = binding.btn14
+        val macroBtns: Array<RelativeLayout> = Array(14) { RelativeLayout(this) }
+        macroBtns[0] = binding.btn0
+        macroBtns[1] = binding.btn1
+        macroBtns[2] = binding.btn2
+        macroBtns[3] = binding.btn3
+        macroBtns[4] = binding.btn00
+        macroBtns[5] = binding.btn01
+        macroBtns[6] = binding.btn02
+        macroBtns[7] = binding.btn03
+        macroBtns[8] = binding.btn04
+        macroBtns[9] = binding.btn10
+        macroBtns[10] = binding.btn11
+        macroBtns[11] = binding.btn12
+        macroBtns[12] = binding.btn13
+        macroBtns[13] = binding.btn14
 
-        macroBtns[0].setOnClickListener { socketMessage("00") }
-        macroBtns[1].setOnClickListener { socketMessage("01") }
-        macroBtns[2].setOnClickListener { socketMessage("02") }
-        macroBtns[3].setOnClickListener { socketMessage("03") }
-        macroBtns[4].setOnClickListener { socketMessage("04") }
-        macroBtns[5].setOnClickListener { socketMessage("10") }
-        macroBtns[6].setOnClickListener { socketMessage("11") }
-        macroBtns[7].setOnClickListener { socketMessage("12") }
-        macroBtns[8].setOnClickListener { socketMessage("13") }
-        macroBtns[9].setOnClickListener { socketMessage("14") }
+
+
+
+        macroBtns[0].setOnClickListener { socketMessage("1") }
+        macroBtns[1].setOnClickListener { socketMessage("2") }
+        macroBtns[2].setOnClickListener { socketMessage("3") }
+        macroBtns[3].setOnClickListener { socketMessage("4") }
+        macroBtns[4].setOnClickListener { socketMessage("5") }
+        macroBtns[5].setOnClickListener { socketMessage("6") }
+        macroBtns[6].setOnClickListener { socketMessage("7") }
+        macroBtns[7].setOnClickListener { socketMessage("8") }
+        macroBtns[8].setOnClickListener { socketMessage("9") }
+        macroBtns[9].setOnClickListener { socketMessage("10") }
+        macroBtns[10].setOnClickListener { socketMessage("11") }
+        macroBtns[11].setOnClickListener { socketMessage("12") }
+        macroBtns[12].setOnClickListener { socketMessage("13") }
+        macroBtns[13].setOnClickListener { socketMessage("14") }
     }
 
     private fun socketMessage(message: String) {
