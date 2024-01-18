@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MacroMate.View.Profiles">
+    <VerticalStackLayout>
+        <Label 
+            Text="MacroMate Profiles"
+            FontSize="20"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+
+        <HorizontalStackLayout 
+            Padding="10" 
+            Spacing="20"
+            HorizontalOptions="CenterAndExpand">
+            
+            <Editor
+                Text="Profile 99"
+                HeightRequest="50"
+                WidthRequest="400"
+                FontSize="18"
+                VerticalTextAlignment="Center"
+                VerticalOptions="End"/>
+
+            <Picker 
+                x:Name="picker" 
+                WidthRequest="130"
+                HeightRequest="80"
+                Title="Select a monkey"
+                VerticalOptions="End" >
+                
+                <Picker.ItemsSource>
+                    <x:Array Type="{x:Type x:String}">
+                        <x:String>3 x 2</x:String>
+                        <x:String>5 x 2</x:String>
+                        <x:String>7 x 3</x:String>
+                    </x:Array>
+                </Picker.ItemsSource>
+            </Picker>
+
+            <Button 
+                Text="Create"
+                WidthRequest="150" 
+                HeightRequest="50" 
+                VerticalOptions="End" />
+        </HorizontalStackLayout>
+
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="50">
+                <Button 
+                    x:Name="btnP1"
+                    Text="Premier Pro"
+                    Clicked="btnP1_Clicked"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </VerticalStackLayout>
+</ContentPage>

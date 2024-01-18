@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MacroMate.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="dot net bot in a race car number eight" />
+
+            <Label
+                Text="MacroMate"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+
+            <FlexLayout 
+                Direction="Column"
+                AlignItems="Center"
+                JustifyContent="SpaceEvenly">
+                <StackLayout Orientation="Horizontal">
+
+                    <Editor
+                        x:Name="editorIP"
+                        MaxLength="15"
+                        HeightRequest="40"
+                        WidthRequest="200"
+                        IsEnabled="False"
+                        FontSize="18"
+                        Margin="0,0,10,0"/>
+
+                    <Editor
+                        x:Name="editorPort"
+                        MaxLength="4"
+                        HeightRequest="40"
+                        WidthRequest="80"
+                        IsEnabled="False"
+                        FontSize="18"
+                        Margin="10,0,0,0"/>
+
+                </StackLayout>
+            </FlexLayout>
+
+            <Button
+                x:Name="CounterBtn"
+                Text="Start"
+                WidthRequest="200"
+                Clicked="StartConnection"/>
+
+            <Label
+                x:Name="lbStatus"
+                Text="Not Connected!"
+                TextColor="IndianRed"
+                HorizontalTextAlignment="Center"
+                WidthRequest="200"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MacroActivity"
+    android:keepScreenOn="true">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="9dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/btn00"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_arrow" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn01"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_in" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn02"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_out" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn03"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_knive" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn04"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_ripple" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+
+        <RelativeLayout
+            android:id="@+id/btn10"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_lift" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn11"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_overwrite" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn12"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_slip" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn13"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_marker" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn14"
+            android:layout_width="@dimen/macro_btn_size"
+            android:layout_height="@dimen/macro_btn_size"
+            android:layout_margin="10dp"
+            android:background="@drawable/btn_macro"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="@dimen/macro_icon_size"
+                android:layout_height="@dimen/macro_icon_size"
+                android:layout_centerInParent="true"
+                android:contentDescription="@string/macro_btn"
+                android:src="@drawable/ic_magnet" />
+        </RelativeLayout>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
