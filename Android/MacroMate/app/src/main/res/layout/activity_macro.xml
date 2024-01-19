@@ -39,7 +39,7 @@
                 android:layout_height="@dimen/macro_icon_small"
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
+                android:src="@drawable/ic_return" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -62,7 +62,7 @@
                 android:layout_height="@dimen/macro_icon_small"
                 android:layout_centerInParent="true"
                 android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
+                android:src="@drawable/ic_switch" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -114,257 +114,19 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/CL_top"
+
+    <GridLayout
+        android:id="@+id/gridBtn"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="14dp"
-        android:layout_marginBottom="7dp"
-        app:layout_constraintBottom_toTopOf="@+id/CL_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/CL_left"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <RelativeLayout
-            android:id="@+id/btn00"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn01"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn01"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn02"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn00"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn02"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn03"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn01"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn03"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn04"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn02"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn04"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn03"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/CL_bottom"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="7dp"
         android:layout_marginTop="7dp"
-        android:layout_marginBottom="14dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginBottom="7dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/CL_left"
-        app:layout_constraintTop_toBottomOf="@+id/CL_top">
-
-        <RelativeLayout
-            android:id="@+id/btn10"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn11"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn11"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn12"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn10"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn12"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn13"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn11"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn13"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn14"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn12"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/btn14"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
-            android:background="@drawable/btn_macro"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn13"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <ImageView
-                android:layout_width="@dimen/macro_icon_size"
-                android:layout_height="@dimen/macro_icon_size"
-                android:layout_centerInParent="true"
-                android:contentDescription="@string/macro_btn"
-                android:src="@drawable/ic_arrow" />
-        </RelativeLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

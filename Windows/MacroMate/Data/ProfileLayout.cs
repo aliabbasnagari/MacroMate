@@ -10,8 +10,9 @@ namespace MacroMate.Data
 
     public class ProfileLayout
     {
-        public string layout_dimensions { get; set; }
-        public string layout_index { get; set; }
+        public int rows { get; set; }
+        public int columns { get; set; }
         public Dictionary<string, string> key_commands { get; set; }
+        public Dictionary<string, string> icons { get; set; }
     }
 }

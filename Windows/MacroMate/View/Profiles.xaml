@@ -13,8 +13,9 @@
             Padding="10" 
             Spacing="20"
             HorizontalOptions="CenterAndExpand">
-            
+
             <Editor
+                x:Name="profileName"
                 Text="Profile 99"
                 HeightRequest="50"
                 WidthRequest="400"
@@ -22,37 +23,39 @@
                 VerticalTextAlignment="Center"
                 VerticalOptions="End"/>
 
-            <Picker 
-                x:Name="picker" 
-                WidthRequest="130"
-                HeightRequest="80"
-                Title="Select a Layout"
-                VerticalOptions="End" >
-                
-                <Picker.ItemsSource>
-                    <x:Array Type="{x:Type x:String}">
-                        <x:String>4 x 2</x:String>
-                        <x:String>5 x 2</x:String>
-                        <x:String>6 x 2</x:String>
-                        <x:String>6 x 3</x:String>
-                    </x:Array>
-                </Picker.ItemsSource>
-            </Picker>
+            <Editor
+                x:Name="profileRows"
+                Text="2"
+                Placeholder="Rows"
+                HeightRequest="50"
+                WidthRequest="100"
+                FontSize="18"
+                VerticalTextAlignment="Center"
+                VerticalOptions="End"/>
+
+            <Editor
+                x:Name="profileColumns"
+                Text="2"
+                Placeholder="Columns"
+                HeightRequest="50"
+                WidthRequest="100"
+                FontSize="18"
+                VerticalTextAlignment="Center"
+                VerticalOptions="End"/>
 
             <Button 
+                x:Name="btnCreate"
                 Text="Create"
                 WidthRequest="150" 
                 HeightRequest="50" 
-                VerticalOptions="End" />
+                VerticalOptions="End"
+                Clicked="btnCreate_Clicked"/>
         </HorizontalStackLayout>
 
         <ScrollView>
             <VerticalStackLayout
-                Padding="50">
-                <Button 
-                    x:Name="btnP1"
-                    Text="Premier Pro"
-                    Clicked="btnP1_Clicked"/>
+                x:Name="vsLayout"
+                Padding="50" >
             </VerticalStackLayout>
         </ScrollView>
 

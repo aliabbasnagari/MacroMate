@@ -1,5 +1,6 @@
 
 using MacroMate.Data;
+using Microsoft.Maui.Platform;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -15,7 +16,9 @@ namespace MacroMate.View
         private string profileName;
         private int numButtons;
         private TcpListener listener;
+        private ImageButton selectedButton;
         private InputSimulator inputSimulator;
+        private ProfileLayout profileLayout;
         private Dictionary<string, VirtualKeyCode> keyboardKeys;
         private DatabaseContext db = DatabaseContext.getInstance();
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -27,70 +30,42 @@ namespace MacroMate.View
             this.profileName = profileName;
             inputSimulator = new InputSimulator();
             keyboardKeys = getKeyDict();
+            profileLayout = db.profiles[profileName];
             listener = new TcpListener(IPAddress.Parse(this.ip), port);
             InitializeComponent();
             Task.Run(() => StartServerAsync(cancellationTokenSource.Token));
             lbProfile.Text = this.profileName;
-            switch (db.profiles[profileName].layout_index)
+
+            AddPickerOptions();
+
+            for (int i = 0; i < profileLayout.rows; i++)
             {
-                case "1":
-                    imgLayout.Source = "ml1.png"; numButtons = 8; break;
-                case "2":
-                    imgLayout.Source = "ml2.png"; numButtons = 10; break;
-                case "3":
-                    imgLayout.Source = "ml3.png"; numButtons = 12; break;
-                case "4":
-                    imgLayout.Source = "ml4.png"; numButtons = 18; break;
+                layoutGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             }
 
-            foreach (var pair in db.profiles[profileName].key_commands)
+            for (int j = 0; j < profileLayout.columns; j++)
             {
-                string key = pair.Key;
-                string[] value = pair.Value.Split("+");
-                if (int.Parse(key) < 3)
+                layoutGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            }
+
+            profileImage.Source = profileLayout.icons["profile"];
+            int btnId = 5;
+            for (int i = 0; i < profileLayout.rows; i++)
+            {
+                for (int j = 0; j < profileLayout.columns; j++)
                 {
-
-                }
-                else if (value.Length == 3)
-                {
-                    HorizontalStackLayout hzSL = new HorizontalStackLayout();
-                    Label lbl = new Label();
-                    lbl.Text = $"Button {key}";
-                    lbl.VerticalOptions = LayoutOptions.Center;
-                    lbl.Margin = new Thickness(0, 0, 20, 0);
-                    Picker picker1 = new Picker();
-                    picker1.WidthRequest = 125;
-                    picker1.Margin = new Thickness(0, 0, 20, 0);
-                    picker1.Items.Add("-");
-                    picker1.Items.Add("ctrl");
-                    picker1.Items.Add("shift");
-                    picker1.Items.Add("alt");
-                    picker1.SelectedItem = value[0];
-
-                    Picker picker2 = new Picker();
-                    picker2.WidthRequest = 125;
-                    picker2.Margin = new Thickness(0, 0, 20, 0);
-                    picker2.Items.Add("-");
-                    picker2.Items.Add("ctrl");
-                    picker2.Items.Add("shift");
-                    picker2.Items.Add("alt");
-                    picker2.SelectedItem = value[1];
-
-                    Picker picker3 = new Picker();
-                    picker3.WidthRequest = 125;
-                    picker3.Margin = new Thickness(0, 0, 20, 0);
-                    picker3.Items.Add("-");
-                    for (char c = 'a'; c <= 'z'; c++) picker3.Items.Add(c.ToString());
-                    for (char c = '0'; c <= '9'; c++) picker3.Items.Add(c.ToString());
-                    for (int j = 1; j <= 12; j++) picker3.Items.Add($"F{j}");
-                    picker3.SelectedItem = value[2];
-
-                    hzSL.Children.Add(lbl);
-                    hzSL.Children.Add(picker1);
-                    hzSL.Children.Add(picker2);
-                    hzSL.Children.Add(picker3);
-                    hzSL.HorizontalOptions = LayoutOptions.Center;
-                    verticalSL.Children.Add(hzSL);
+                    ImageButton imageBtn = new ImageButton();
+                    imageBtn.ClassId = btnId.ToString();
+                    imageBtn.Clicked += OnGridBtnClick;
+                    imageBtn.Source = profileLayout.icons[btnId.ToString()];
+                    imageBtn.WidthRequest = 100;
+                    imageBtn.HeightRequest = 100;
+                    imageBtn.BackgroundColor = Color.FromRgb(170, 217, 187);
+                    imageBtn.Margin = new Thickness(7);
+                    layoutGrid.Children.Add(imageBtn);
+                    Grid.SetRow(imageBtn, i);
+                    Grid.SetColumn(imageBtn, j);
+                    btnId++;
                 }
             }
         }
@@ -139,7 +114,7 @@ namespace MacroMate.View
                     inputSimulator.Keyboard.ModifiedKeyStroke(k2, k3);
                 }
                 else if (keys.Length == 3 && keyboardKeys.TryGetValue(keys[0], out var k4) && keyboardKeys.TryGetValue(keys[1], out var k5) && keyboardKeys.TryGetValue(keys[2], out var k6))
-                {   
+                {
                     inputSimulator.Keyboard.ModifiedKeyStroke(new List<VirtualKeyCode> { k4, k5 }, k6);
                 }
             }
@@ -151,6 +126,24 @@ namespace MacroMate.View
             listener?.Stop();
             Navigation.PopAsync();
             base.OnDisappearing();
+        }
+
+        private void AddPickerOptions()
+        {
+            pickerCommand1.Items.Add("-");
+            pickerCommand1.Items.Add("ctrl");
+            pickerCommand1.Items.Add("shift");
+            pickerCommand1.Items.Add("alt");
+
+            pickerCommand2.Items.Add("-");
+            pickerCommand2.Items.Add("ctrl");
+            pickerCommand2.Items.Add("shift");
+            pickerCommand2.Items.Add("alt");
+
+            pickerCommand3.Items.Add("-");
+            for (char c = 'a'; c <= 'z'; c++) pickerCommand3.Items.Add(c.ToString());
+            for (char c = '0'; c <= '9'; c++) pickerCommand3.Items.Add(c.ToString());
+            for (int j = 1; j <= 12; j++) pickerCommand3.Items.Add($"F{j}");
         }
 
         private Dictionary<string, VirtualKeyCode> getKeyDict()
@@ -189,10 +182,60 @@ namespace MacroMate.View
             keyboardKeys.Add("capslock", VirtualKeyCode.CAPITAL);
             return keyboardKeys;
         }
-
         public void Dispose()
         {
             cancellationTokenSource.Dispose();
+        }
+        private void OnGridBtnClick(object sender, EventArgs e)
+        { 
+            if(selectedButton != null)
+            {
+                selectedButton.BackgroundColor = Color.FromRgb(170, 217, 187);
+            }
+            ImageButton btn = (ImageButton)sender;
+            btn.BackgroundColor = Color.FromRgb(128, 188, 189);
+            string[] keys = profileLayout.key_commands[btn.ClassId].Split("+");
+            if(keys.Length == 3)
+            {
+                pickerCommand1.SelectedItem = keys[0];
+                pickerCommand2.SelectedItem = keys[1];
+                pickerCommand3.SelectedItem = keys[2];
+            }
+            selectedButton = btn;
+        }
+
+        private void profileImageChoose(object sender, EventArgs e)
+        {
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MacroMate", "Icons");
+            if(!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            DisplayAlert("1", path, "2");
+            string[] images = Directory.GetFiles(path, "*.png");
+
+            CollectionView cv = new CollectionView
+            {
+                ItemsSource = images,
+                ItemTemplate = new DataTemplate(() =>
+                {
+                    var img = new Image();
+                    img.SetBinding(Image.SourceProperty, ".");
+                    img.Aspect = Aspect.AspectFit;
+                    img.WidthRequest = 100;
+                    return new Grid
+                    {
+                        Children = { img }
+                    };
+                })
+            };
+
+            //cv.SelectionChanged
+
+            Content = new StackLayout
+            {
+                Children = { cv }
+            };
         }
     }
 }

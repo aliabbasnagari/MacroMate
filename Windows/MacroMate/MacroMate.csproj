@@ -57,6 +57,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\default_app_img.png" />
+	  <None Remove="Resources\Images\default_btn_img.png" />
+	  <None Remove="Resources\Images\ic_arrow.png" />
 	  <None Remove="Resources\Images\ML1.png" />
 	  <None Remove="Resources\Images\ML2.png" />
 	  <None Remove="Resources\Images\ML3.png" />

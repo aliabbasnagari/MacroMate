@@ -3,13 +3,63 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MacroMate.View.MacroMate">
 
-    <VerticalStackLayout VerticalOptions="FillAndExpand">
-        <Label x:Name="lbProfile" Text="Profile" VerticalOptions="Center" HorizontalOptions="Center" />
-        <Image x:Name="imgLayout" WidthRequest="500" HeightRequest="200" Margin="0,0,0,15" />
-        <ScrollView HeightRequest="350" >
-            <VerticalStackLayout Spacing="15" VerticalOptions="FillAndExpand" x:Name="verticalSL">
-            </VerticalStackLayout>
-        </ScrollView>
-        <Button Margin="0,15,0,0" WidthRequest="300" Text="Save" />
-    </VerticalStackLayout>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ImageButton
+            Clicked="profileImageChoose"
+            WidthRequest="200"
+            HeightRequest="200"
+            x:Name="profileImage"
+            Grid.Row="0"/>
+
+        <Label x:Name="lbProfile" Text="Profile" VerticalOptions="Center" HorizontalOptions="Center"
+               FontSize="20" Grid.Row="1"/>
+
+        <Grid Grid.Row="2" HorizontalOptions="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <ImageButton Grid.Row="0" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" />
+                <ImageButton Grid.Row="1" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" />
+                <ImageButton Grid.Row="2" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" BackgroundColor="#aad9bb" ClassId="3" Clicked="OnGridBtnClick" />
+                <ImageButton Grid.Row="3" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" BackgroundColor="#aad9bb" ClassId="4" Clicked="OnGridBtnClick" />
+            </Grid>
+
+            <Grid x:Name="layoutGrid" Grid.Column="1" HorizontalOptions="Center">
+            </Grid>
+        </Grid>
+
+        <HorizontalStackLayout Margin="10" HorizontalOptions="Center" Grid.Row="3" Spacing="15">
+
+            <Label VerticalOptions="Center" FontSize="18" Text="Button"/>
+
+            <Picker x:Name="pickerCommand1" WidthRequest="130" />
+            <Picker x:Name="pickerCommand2" WidthRequest="130" />
+            <Picker x:Name="pickerCommand3" WidthRequest="130" />
+
+            <Button WidthRequest="200" Text="Select Icon" />
+
+        </HorizontalStackLayout>
+
+
+        <Button Grid.Row="4" Margin="15" WidthRequest="300" Text="Assign" />
+
+    </Grid>
 </ContentPage>
