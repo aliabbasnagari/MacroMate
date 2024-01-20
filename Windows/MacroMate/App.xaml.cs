@@ -1,4 +1,6 @@
-﻿namespace MacroMate
+﻿using MacroMate.View;
+
+namespace MacroMate
 {
     public partial class App : Application
     {
@@ -6,7 +8,7 @@
         {
             InitializeComponent();
 
-            var appShell = new NavigationPage(new MainPage());
+            var appShell = new NavigationPage(new Profiles("192.168.0.98", 7214));
             MainPage = appShell;
         }
     }

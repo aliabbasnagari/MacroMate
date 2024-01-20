@@ -1,5 +1,7 @@
 
+using CommunityToolkit.Maui.Views;
 using MacroMate.Data;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Platform;
 using System.Net;
 using System.Net.Sockets;
@@ -14,9 +16,8 @@ namespace MacroMate.View
         private string ip;
         private int port;
         private string profileName;
-        private int numButtons;
         private TcpListener listener;
-        private ImageButton selectedButton;
+        private ImageButton? selectedButton;
         private InputSimulator inputSimulator;
         private ProfileLayout profileLayout;
         private Dictionary<string, VirtualKeyCode> keyboardKeys;
@@ -25,18 +26,18 @@ namespace MacroMate.View
 
         public MacroMate(string ip, int port, string profileName)
         {
+            InitializeComponent();
+            AddPickerOptions();
+
             this.ip = ip;
             this.port = port;
             this.profileName = profileName;
-            inputSimulator = new InputSimulator();
-            keyboardKeys = getKeyDict();
-            profileLayout = db.profiles[profileName];
-            listener = new TcpListener(IPAddress.Parse(this.ip), port);
-            InitializeComponent();
-            Task.Run(() => StartServerAsync(cancellationTokenSource.Token));
             lbProfile.Text = this.profileName;
 
-            AddPickerOptions();
+            inputSimulator = new InputSimulator();
+            listener = new TcpListener(IPAddress.Parse(this.ip), this.port);
+            keyboardKeys = getKeyDict();
+            profileLayout = db.profiles[profileName];            
 
             for (int i = 0; i < profileLayout.rows; i++)
             {
@@ -68,6 +69,16 @@ namespace MacroMate.View
                     btnId++;
                 }
             }
+
+            Task.Run(() => StartServerAsync(cancellationTokenSource.Token));
+        }
+
+        private async void init()
+        {
+            string path = "C:\\Users\\Ali Abbas\\Documents\\MacroMate\\Icons";
+            ImageSelector iselect = new ImageSelector(path, Navigation);
+            string choosen = await iselect.ChooseImage();
+            await DisplayAlert("1", choosen, "OK");
         }
 
         private async Task StartServerAsync(CancellationToken cancellationToken)
@@ -186,16 +197,15 @@ namespace MacroMate.View
         {
             cancellationTokenSource.Dispose();
         }
+
         private void OnGridBtnClick(object sender, EventArgs e)
-        { 
-            if(selectedButton != null)
-            {
-                selectedButton.BackgroundColor = Color.FromRgb(170, 217, 187);
-            }
+        {
+            if (selectedButton != null) selectedButton.BackgroundColor = Color.FromRgb(170, 217, 187);
+
             ImageButton btn = (ImageButton)sender;
             btn.BackgroundColor = Color.FromRgb(128, 188, 189);
             string[] keys = profileLayout.key_commands[btn.ClassId].Split("+");
-            if(keys.Length == 3)
+            if (keys.Length == 3)
             {
                 pickerCommand1.SelectedItem = keys[0];
                 pickerCommand2.SelectedItem = keys[1];
@@ -206,36 +216,16 @@ namespace MacroMate.View
 
         private void profileImageChoose(object sender, EventArgs e)
         {
-            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MacroMate", "Icons");
-            if(!Directory.Exists(path))
+            init();
+        }
+
+        private async void btnAssign_Clicked(object sender, EventArgs e)
+        {
+            var res = await this.ShowPopupAsync(new ChooseImage());
+            if(res != null)
             {
-                Directory.CreateDirectory(path);
+                DisplayAlert("1", (string)res, "OK");
             }
-            DisplayAlert("1", path, "2");
-            string[] images = Directory.GetFiles(path, "*.png");
-
-            CollectionView cv = new CollectionView
-            {
-                ItemsSource = images,
-                ItemTemplate = new DataTemplate(() =>
-                {
-                    var img = new Image();
-                    img.SetBinding(Image.SourceProperty, ".");
-                    img.Aspect = Aspect.AspectFit;
-                    img.WidthRequest = 100;
-                    return new Grid
-                    {
-                        Children = { img }
-                    };
-                })
-            };
-
-            //cv.SelectionChanged
-
-            Content = new StackLayout
-            {
-                Children = { cv }
-            };
         }
     }
 }

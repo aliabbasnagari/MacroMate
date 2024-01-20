@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using MacroMate.View;
+using MacroMate.Data;
 
 namespace MacroMate
 {
@@ -48,8 +49,11 @@ namespace MacroMate
                         }
                         else if (message == "connected")
                         {
-                            lbStatus.Dispatcher.Dispatch(() => lbStatus.Text = "Connected!");
-                            Dispatcher.Dispatch(() => Navigation.PushAsync(new Profiles(editorIP.Text, int.Parse(editorPort.Text))));
+                            await Dispatcher.DispatchAsync(async () =>
+                            {
+                                lbStatus.Text = "Connected!";
+                                await Navigation.PushAsync(new Profiles(editorIP.Text, int.Parse(editorPort.Text)));
+                            });
                             break;
                         }
 
@@ -76,7 +80,7 @@ namespace MacroMate
             IPAddress[] addresses = Dns.GetHostAddresses(hostName);
             foreach (IPAddress address in addresses)
             {
-                if (address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork)
+                if (address.AddressFamily == AddressFamily.InterNetwork)
                 {
                     return address.ToString();
                 }
@@ -90,7 +94,5 @@ namespace MacroMate
             lbStatus.Text = "Not Connected!";
             lbStatus.TextColor = Colors.IndianRed;
         }
-
     }
-
 }

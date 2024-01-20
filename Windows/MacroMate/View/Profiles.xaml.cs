@@ -11,12 +11,10 @@ public partial class Profiles : ContentPage
     private DatabaseContext db = DatabaseContext.getInstance();
     public Profiles(string ip, int port)
     {
+        InitializeComponent();
         this.ip = ip;
         this.port = port;
-        InitializeComponent();
         db.LoadProfiles();
-
-        // DisplayAlert("1", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MacroMate") ,"ok");
 
         var tapGes = new TapGestureRecognizer();
         tapGes.Tapped += Profile_Clicked;
@@ -60,6 +58,5 @@ public partial class Profiles : ContentPage
 
     private void btnCreate_Clicked(object sender, EventArgs e)
     {
-
     }
 }

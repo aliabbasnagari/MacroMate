@@ -59,7 +59,7 @@
         </HorizontalStackLayout>
 
 
-        <Button Grid.Row="4" Margin="15" WidthRequest="300" Text="Assign" />
+        <Button x:Name="btnAssign" Clicked="btnAssign_Clicked" Grid.Row="4" Margin="15" WidthRequest="300" Text="Assign" />
 
     </Grid>
 </ContentPage>
