@@ -42,9 +42,9 @@ namespace MacroMate.Data
             }
         }
 
-        public void SaveMappingsToFile(string filePath, Dictionary<string, Dictionary<string, string>> allMappings)
+        public void UpdateProfiles()
         {
-            string json = JsonConvert.SerializeObject(allMappings, Newtonsoft.Json.Formatting.Indented);
+            string json = JsonConvert.SerializeObject(profiles, Formatting.Indented);
             File.WriteAllText(filePath, json);
             Console.WriteLine($"Mappings saved to '{filePath}'.");
         }

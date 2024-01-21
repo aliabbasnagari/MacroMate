@@ -54,7 +54,7 @@
             <Picker x:Name="pickerCommand2" WidthRequest="130" />
             <Picker x:Name="pickerCommand3" WidthRequest="130" />
 
-            <Button WidthRequest="200" Text="Select Icon" />
+            <Button x:Name="btnIconSelect" WidthRequest="200" Text="Select Icon" Clicked="btnIconSelect_Clicked" />
 
         </HorizontalStackLayout>
 

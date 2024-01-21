@@ -37,7 +37,7 @@ namespace MacroMate.View
             inputSimulator = new InputSimulator();
             listener = new TcpListener(IPAddress.Parse(this.ip), this.port);
             keyboardKeys = getKeyDict();
-            profileLayout = db.profiles[profileName];            
+            profileLayout = db.profiles[profileName];
 
             for (int i = 0; i < profileLayout.rows; i++)
             {
@@ -71,14 +71,6 @@ namespace MacroMate.View
             }
 
             Task.Run(() => StartServerAsync(cancellationTokenSource.Token));
-        }
-
-        private async void init()
-        {
-            string path = "C:\\Users\\Ali Abbas\\Documents\\MacroMate\\Icons";
-            ImageSelector iselect = new ImageSelector(path, Navigation);
-            string choosen = await iselect.ChooseImage();
-            await DisplayAlert("1", choosen, "OK");
         }
 
         private async Task StartServerAsync(CancellationToken cancellationToken)
@@ -214,17 +206,37 @@ namespace MacroMate.View
             selectedButton = btn;
         }
 
-        private void profileImageChoose(object sender, EventArgs e)
+        private async void profileImageChoose(object sender, EventArgs e)
         {
-            init();
+            var result = await this.ShowPopupAsync(new ChooseImage());
+            if (result != null)
+            {
+                profileImage.Source = result.ToString();
+            }
         }
 
-        private async void btnAssign_Clicked(object sender, EventArgs e)
+        private void btnAssign_Clicked(object sender, EventArgs e)
         {
-            var res = await this.ShowPopupAsync(new ChooseImage());
-            if(res != null)
+            if (db.profiles.ContainsKey(profileName))
             {
-                DisplayAlert("1", (string)res, "OK");
+                string newval = $"{pickerCommand1.SelectedItem}+{pickerCommand2.SelectedItem}+{pickerCommand3.SelectedItem}";
+                ProfileLayout pl = db.profiles[profileName];
+                if (pl.key_commands[selectedButton.ClassId] != newval)
+                {
+                    pl.key_commands[selectedButton.ClassId] = newval;
+                    pl.icons[selectedButton.ClassId] = selectedButton.Source.ToString() ?? "default_img";
+                    db.UpdateProfiles();
+                    DisplayAlert("Update", "Done", "Ok");
+                }
+            }
+        }
+
+        private async void btnIconSelect_Clicked(object sender, EventArgs e)
+        {
+            var result = await this.ShowPopupAsync(new ChooseImage());
+            if (result != null && selectedButton != null)
+            {
+                selectedButton.Source = result.ToString();
             }
         }
     }
