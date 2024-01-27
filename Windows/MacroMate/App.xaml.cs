@@ -8,7 +8,7 @@ namespace MacroMate
         {
             InitializeComponent();
 
-            var appShell = new NavigationPage(new Profiles("192.168.0.98", 7214));
+            var appShell = new NavigationPage(new MainPage());
             MainPage = appShell;
         }
     }

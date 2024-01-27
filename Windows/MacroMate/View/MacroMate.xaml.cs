@@ -19,7 +19,7 @@ namespace MacroMate.View
         private TcpListener listener;
         private ImageButton? selectedButton;
         private InputSimulator inputSimulator;
-        private ProfileLayout profileLayout;
+        private ProfileLayout? profileLayout;
         private Dictionary<string, VirtualKeyCode> keyboardKeys;
         private DatabaseContext db = DatabaseContext.getInstance();
         private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -37,19 +37,15 @@ namespace MacroMate.View
             inputSimulator = new InputSimulator();
             listener = new TcpListener(IPAddress.Parse(this.ip), this.port);
             keyboardKeys = getKeyDict();
-            profileLayout = db.profiles[profileName];
+            if (db.profiles != null && db.profiles.ContainsKey(profileName))
+                profileLayout = db.profiles[profileName];
 
-            for (int i = 0; i < profileLayout.rows; i++)
-            {
-                layoutGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            }
+            for (int i = 0; i < profileLayout.rows; i++) layoutGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            for (int i = 0; i < profileLayout.columns; i++) layoutGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
 
-            for (int j = 0; j < profileLayout.columns; j++)
-            {
-                layoutGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-            }
+            var get_icon = (File.Exists(profileLayout.icons["profile"]) ? profileLayout.icons["profile"] : "default_app_img.png");
+            profileImage.Source = get_icon;
 
-            profileImage.Source = profileLayout.icons["profile"];
             int btnId = 5;
             for (int i = 0; i < profileLayout.rows; i++)
             {
@@ -57,12 +53,13 @@ namespace MacroMate.View
                 {
                     ImageButton imageBtn = new ImageButton();
                     imageBtn.ClassId = btnId.ToString();
-                    imageBtn.Clicked += OnGridBtnClick;
                     imageBtn.Source = profileLayout.icons[btnId.ToString()];
                     imageBtn.WidthRequest = 100;
                     imageBtn.HeightRequest = 100;
                     imageBtn.BackgroundColor = Color.FromRgb(170, 217, 187);
                     imageBtn.Margin = new Thickness(7);
+                    imageBtn.Clicked += OnGridBtnClick;
+
                     layoutGrid.Children.Add(imageBtn);
                     Grid.SetRow(imageBtn, i);
                     Grid.SetColumn(imageBtn, j);
@@ -104,7 +101,7 @@ namespace MacroMate.View
 
         private void SimulateKey(string message)
         {
-            Dictionary<string, string> key_action = db.profiles[profileName].key_commands;
+            Dictionary<string, string> key_action = profileLayout.key_commands;
             if (key_action != null && key_action.ContainsKey(message))
             {
                 string[] keys = key_action[message].Split("+").Where(item => item != "-").ToArray();
@@ -137,11 +134,13 @@ namespace MacroMate.View
             pickerCommand1.Items.Add("ctrl");
             pickerCommand1.Items.Add("shift");
             pickerCommand1.Items.Add("alt");
+            pickerCommand1.Items.Add("win");
 
             pickerCommand2.Items.Add("-");
             pickerCommand2.Items.Add("ctrl");
             pickerCommand2.Items.Add("shift");
             pickerCommand2.Items.Add("alt");
+            pickerCommand2.Items.Add("win");
 
             pickerCommand3.Items.Add("-");
             for (char c = 'a'; c <= 'z'; c++) pickerCommand3.Items.Add(c.ToString());
@@ -183,6 +182,7 @@ namespace MacroMate.View
             keyboardKeys.Add("alt", VirtualKeyCode.MENU);
             keyboardKeys.Add("esc", VirtualKeyCode.ESCAPE);
             keyboardKeys.Add("capslock", VirtualKeyCode.CAPITAL);
+            keyboardKeys.Add("win", VirtualKeyCode.LWIN);
             return keyboardKeys;
         }
         public void Dispose()
@@ -211,20 +211,27 @@ namespace MacroMate.View
             var result = await this.ShowPopupAsync(new ChooseImage());
             if (result != null)
             {
-                profileImage.Source = result.ToString();
+                string newval = $"{result}";
+                if (profileLayout != null && profileLayout.icons["profile"] != newval)
+                {
+                    profileLayout.icons["profile"] = newval;
+                    profileImage.Source = newval;
+                    db.UpdateProfiles();
+                    await DisplayAlert("Update", "Done", "Ok");
+                }
             }
         }
 
         private void btnAssign_Clicked(object sender, EventArgs e)
         {
-            if (db.profiles.ContainsKey(profileName))
+            if (profileLayout != null)
             {
-                string newval = $"{pickerCommand1.SelectedItem}+{pickerCommand2.SelectedItem}+{pickerCommand3.SelectedItem}";
-                ProfileLayout pl = db.profiles[profileName];
-                if (pl.key_commands[selectedButton.ClassId] != newval)
+                string new_val = $"{pickerCommand1.SelectedItem}+{pickerCommand2.SelectedItem}+{pickerCommand3.SelectedItem}";
+                string new_path = selectedButton?.Source?.ToString()?.Replace("File:", "").Trim() ?? "default_btn_img.png";
+                if (selectedButton != null && (profileLayout.key_commands[selectedButton.ClassId] != new_val || profileLayout.icons["profile"] != new_path))
                 {
-                    pl.key_commands[selectedButton.ClassId] = newval;
-                    pl.icons[selectedButton.ClassId] = selectedButton.Source.ToString() ?? "default_img";
+                    profileLayout.key_commands[selectedButton.ClassId] = new_val;
+                    profileLayout.icons[selectedButton.ClassId] = new_path;
                     db.UpdateProfiles();
                     DisplayAlert("Update", "Done", "Ok");
                 }

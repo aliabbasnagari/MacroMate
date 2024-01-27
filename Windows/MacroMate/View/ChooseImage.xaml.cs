@@ -54,7 +54,7 @@ public partial class ChooseImage
 
     private List<string> GetImagePaths(string folderPath)
     {
-        var imagePaths = Directory.GetFiles(folderPath, "*.png").OrderBy(path => path).ToList();
+        var imagePaths = Directory.GetFiles(folderPath, "*.png").ToList();
         return imagePaths;
     }
 }

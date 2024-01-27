@@ -51,6 +51,8 @@ namespace MacroMate
                         {
                             await Dispatcher.DispatchAsync(async () =>
                             {
+                                listener.Stop();
+                                listener.Dispose();
                                 lbStatus.Text = "Connected!";
                                 await Navigation.PushAsync(new Profiles(editorIP.Text, int.Parse(editorPort.Text)));
                             });
@@ -70,6 +72,33 @@ namespace MacroMate
                     listener.Stop();
                     listener.Dispose();
                 }
+            }
+        }
+
+
+        static byte[] ReadImage(string imagePath)
+        {
+            // Check if the file exists
+            if (!File.Exists(imagePath))
+            {
+                Console.WriteLine($"Image file not found: {imagePath}");
+                return null;
+            }
+
+            try
+            {
+                using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (BinaryReader br = new BinaryReader(fs))
+                    {
+                        return br.ReadBytes((int)fs.Length);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading image: {ex.Message}");
+                return null;
             }
         }
 

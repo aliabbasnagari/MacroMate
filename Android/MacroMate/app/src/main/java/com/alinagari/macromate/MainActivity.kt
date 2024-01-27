@@ -1,25 +1,34 @@
 package com.alinagari.macromate
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageView
 import com.alinagari.macromate.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import java.io.BufferedReader
+import java.io.BufferedWriter
 import java.io.IOException
 import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.net.Socket
 import java.util.Scanner
 
 class MainActivity : AppCompatActivity() {
+
+    var img: ImageView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        img = binding.img
 
         val btnConnect = binding.btnConnect
         val ipText = binding.etIpAddress
@@ -44,7 +53,7 @@ class MainActivity : AppCompatActivity() {
             dataOutputStream.close()
             socket.close()
             if (response == "connect") {
-                val intent = Intent(this, MacroActivity::class.java)
+                val intent = Intent(this, DataActivity::class.java)
                 intent.putExtra("IP", sip)
                 intent.putExtra("PORT", sport)
                 startActivity(intent)
