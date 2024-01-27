@@ -9,9 +9,6 @@ namespace MacroMate
 {
     public partial class MainPage : ContentPage
     {
-
-        private TcpListener? listener;
-
         public MainPage()
         {
             InitializeComponent();
@@ -21,87 +18,59 @@ namespace MacroMate
 
         private void StartConnection(object sender, EventArgs e)
         {
-            listener = new TcpListener(IPAddress.Parse(editorIP.Text), int.Parse(editorPort.Text));
             lbStatus.Text = "Listening...";
             lbStatus.TextColor = Colors.Orange;
-            Task.Run(StartServer);
+            Task.Run(ConnectToServer);
         }
 
-        private async Task StartServer()
+        private async Task ConnectToServer()
         {
-            if (listener != null)
+            using (TcpListener listener = new TcpListener(IPAddress.Parse(editorIP.Text), int.Parse(editorPort.Text)))
             {
                 try
                 {
+                    if (!IPAddress.TryParse(editorIP.Text, out IPAddress? ipAddress) || !int.TryParse(editorPort.Text, out int port))
+                    {
+                        Dispatcher.Dispatch(() => lbStatus.Text = "Invalid IP or Port!");
+                        return;
+                    }
                     listener.Start();
                     while (true)
                     {
-                        TcpClient client = await listener.AcceptTcpClientAsync();
-                        NetworkStream stream = client.GetStream();
-                        byte[] buffer = new byte[1024];
+                        using (TcpClient client = await listener.AcceptTcpClientAsync())
+                        using (NetworkStream stream = client.GetStream())
+                        {
+                            byte[] buffer = new byte[1024];
 
-                        int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
-                        string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                        if (message == "request")
-                        {
-                            byte[] responseBytes = Encoding.UTF8.GetBytes("connect");
-                            await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
-                        }
-                        else if (message == "connected")
-                        {
-                            await Dispatcher.DispatchAsync(async () =>
+                            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
+                            string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                            if (message == "request")
                             {
-                                listener.Stop();
-                                listener.Dispose();
-                                lbStatus.Text = "Connected!";
-                                await Navigation.PushAsync(new Profiles(editorIP.Text, int.Parse(editorPort.Text)));
-                            });
-                            break;
+                                byte[] responseBytes = Encoding.UTF8.GetBytes("connect");
+                                await stream.WriteAsync(responseBytes, 0, responseBytes.Length);
+                            }
+                            else if (message == "connected")
+                            {
+                                await Dispatcher.DispatchAsync(async () =>
+                                {
+                                    listener.Stop();
+                                    listener.Dispose();
+                                    lbStatus.Text = "Connected!";
+                                    await Navigation.PushAsync(new Profiles(editorIP.Text, int.Parse(editorPort.Text)));
+                                });
+                                break;
+                            }
                         }
-
-                        stream.Flush();
-                        client.Close();
                     }
+                    listener.Stop();
+                    listener.Dispose();
                 }
                 catch (Exception ex)
                 {
                     Dispatcher.Dispatch(() => DisplayAlert("Exception", ex.Message, "OK"));
                 }
-                finally
-                {
-                    listener.Stop();
-                    listener.Dispose();
-                }
             }
         }
-
-
-        static byte[] ReadImage(string imagePath)
-        {
-            // Check if the file exists
-            if (!File.Exists(imagePath))
-            {
-                Console.WriteLine($"Image file not found: {imagePath}");
-                return null;
-            }
-
-            try
-            {
-                using (FileStream fs = new FileStream(imagePath, FileMode.Open, FileAccess.Read))
-                {
-                    using (BinaryReader br = new BinaryReader(fs))
-                    {
-                        return br.ReadBytes((int)fs.Length);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading image: {ex.Message}");
-                return null;
-            }
-        }
-
 
         private string GetLocalIpAddress()
         {

@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -42,8 +43,8 @@ class MacroActivity : AppCompatActivity() {
 
         IP = intent.getStringExtra("IP")
         PORT = intent.getIntExtra("PORT", 0)
+        val dataList = intent.getStringArrayListExtra("IMAGES")
         socketMessage("connected")
-
 
         val macroBtns = Array(4) { RelativeLayout(this) }
         macroBtns[0] = binding.btn0
@@ -150,5 +151,10 @@ class MacroActivity : AppCompatActivity() {
             }
         }
         return inSampleSize
+    }
+
+    private fun convertStringToBitmap(bitmapString: String): Bitmap {
+        val decodedBytes = Base64.decode(bitmapString, Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 }

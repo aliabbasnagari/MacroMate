@@ -12,6 +12,7 @@ namespace MacroMate.Data
     {
         public int rows { get; set; }
         public int columns { get; set; }
+        public string profile_icon { get; set; }
         public Dictionary<string, string> key_commands { get; set; }
         public Dictionary<string, string> icons { get; set; }
     }

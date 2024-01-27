@@ -43,7 +43,7 @@ namespace MacroMate.View
             for (int i = 0; i < profileLayout.rows; i++) layoutGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             for (int i = 0; i < profileLayout.columns; i++) layoutGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
 
-            var get_icon = (File.Exists(profileLayout.icons["profile"]) ? profileLayout.icons["profile"] : "default_app_img.png");
+            var get_icon = (File.Exists(profileLayout.profile_icon) ? profileLayout.profile_icon : "default_app_img.png");
             profileImage.Source = get_icon;
 
             int btnId = 5;
