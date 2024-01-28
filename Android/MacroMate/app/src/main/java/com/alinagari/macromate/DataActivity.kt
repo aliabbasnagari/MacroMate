@@ -39,9 +39,13 @@ class DataActivity : AppCompatActivity() {
             for (img in bitmaps) {
                 val imageView = ImageView(this)
                 imageView.setImageBitmap(img)
+                imageView.minimumWidth = 100
+                imageView.minimumHeight = 100
+                imageView.maxWidth = 100
+                imageView.maxHeight = 100
                 llout?.addView(imageView)
             }
-            val rr = receiveImages()
+            receiveImages()
         }
 
     }
@@ -61,6 +65,7 @@ class DataActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun BitmapToString(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)

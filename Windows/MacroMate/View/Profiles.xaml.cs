@@ -57,7 +57,7 @@ public partial class Profiles : ContentPage
         if (db.profiles != null && db.profiles.ContainsKey(btn.ClassId))
         {
             await StartServer(db.profiles[btn.ClassId]);
-            // await Navigation.PushAsync(new MacroMate(ip, port, btn.ClassId));
+            await Navigation.PushAsync(new MacroMate(ip, port, btn.ClassId));
         }
     }
 

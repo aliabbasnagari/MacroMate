@@ -16,7 +16,6 @@ namespace MacroMate.View
         private string ip;
         private int port;
         private string profileName;
-        private TcpListener listener;
         private ImageButton? selectedButton;
         private InputSimulator inputSimulator;
         private ProfileLayout? profileLayout;
@@ -27,75 +26,89 @@ namespace MacroMate.View
         public MacroMate(string ip, int port, string profileName)
         {
             InitializeComponent();
-            AddPickerOptions();
-
             this.ip = ip;
             this.port = port;
             this.profileName = profileName;
             lbProfile.Text = this.profileName;
-
             inputSimulator = new InputSimulator();
-            listener = new TcpListener(IPAddress.Parse(this.ip), this.port);
             keyboardKeys = getKeyDict();
+            AddPickerOptions();
+            initLayout();
+            Task.Run(() => StartServerAsync(cancellationTokenSource.Token));
+        }
+
+        private void initLayout()
+        {
             if (db.profiles != null && db.profiles.ContainsKey(profileName))
                 profileLayout = db.profiles[profileName];
 
-            for (int i = 0; i < profileLayout.rows; i++) layoutGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            for (int i = 0; i < profileLayout.columns; i++) layoutGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
-
-            var get_icon = (File.Exists(profileLayout.profile_icon) ? profileLayout.profile_icon : "default_app_img.png");
-            profileImage.Source = get_icon;
-
-            int btnId = 5;
-            for (int i = 0; i < profileLayout.rows; i++)
+            if (profileLayout != null)
             {
-                for (int j = 0; j < profileLayout.columns; j++)
+
+                for (int i = 0; i < profileLayout.rows; i++) layoutGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                for (int i = 0; i < profileLayout.columns; i++) layoutGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+
+                var get_icon = (File.Exists(profileLayout.profile_icon) ? profileLayout.profile_icon : "default_app_img.png");
+                profileImage.Source = get_icon;
+
+                int btnId = 5;
+                for (int i = 0; i < profileLayout.rows; i++)
                 {
-                    ImageButton imageBtn = new ImageButton();
-                    imageBtn.ClassId = btnId.ToString();
-                    imageBtn.Source = profileLayout.icons[btnId.ToString()];
-                    imageBtn.WidthRequest = 100;
-                    imageBtn.HeightRequest = 100;
-                    imageBtn.BackgroundColor = Color.FromRgb(170, 217, 187);
-                    imageBtn.Margin = new Thickness(7);
-                    imageBtn.Clicked += OnGridBtnClick;
+                    for (int j = 0; j < profileLayout.columns; j++)
+                    {
+                        ImageButton imageBtn = new ImageButton();
+                        imageBtn.ClassId = btnId.ToString();
+                        imageBtn.Source = profileLayout.icons[btnId.ToString()];
+                        imageBtn.WidthRequest = 100;
+                        imageBtn.HeightRequest = 100;
+                        imageBtn.BackgroundColor = Color.FromRgb(170, 217, 187);
+                        imageBtn.Margin = new Thickness(7);
+                        imageBtn.Clicked += OnGridBtnClick;
 
-                    layoutGrid.Children.Add(imageBtn);
-                    Grid.SetRow(imageBtn, i);
-                    Grid.SetColumn(imageBtn, j);
-                    btnId++;
+                        layoutGrid.Children.Add(imageBtn);
+                        Grid.SetRow(imageBtn, i);
+                        Grid.SetColumn(imageBtn, j);
+                        btnId++;
+                    }
                 }
-            }
 
-            Task.Run(() => StartServerAsync(cancellationTokenSource.Token));
+                btn3.Source = profileLayout.icons[btn3.ClassId];
+                btn4.Source = profileLayout.icons[btn4.ClassId];
+            }
         }
 
         private async Task StartServerAsync(CancellationToken cancellationToken)
         {
-            try
+            using (TcpListener listener = new TcpListener(IPAddress.Parse(ip), port))
             {
-                listener.Start();
-                while (!cancellationToken.IsCancellationRequested)
+                try
                 {
-                    TcpClient client = await listener.AcceptTcpClientAsync();
-                    NetworkStream stream = client.GetStream();
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
-                    string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-                    if (message.Length > 0) SimulateKey(message);
-                    stream.Flush();
-                    client.Close();
+                    listener.Start();
+                    while (!cancellationToken.IsCancellationRequested)
+                    {
+                        using (TcpClient client = await listener.AcceptTcpClientAsync())
+                        {
+                            NetworkStream stream = client.GetStream();
+                            byte[] buffer = new byte[1024];
+                            int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length, cancellationToken);
+                            string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                            if (message.Length > 0) SimulateKey(message);
+                            stream.Flush();
+                            stream.Close();
+                            client.Close();
+                        }
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex}");
-                Dispatcher.Dispatch(() => DisplayAlert("Exception", ex.Message, "OK"));
-            }
-            finally
-            {
-                listener.Stop();
-                listener.Server.Dispose();
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception: {ex}");
+                    Dispatcher.Dispatch(() => DisplayAlert("Exception", ex.Message, "OK"));
+                }
+                finally
+                {
+                    listener.Stop();
+                    listener.Server.Dispose();
+                }
             }
         }
 
@@ -123,7 +136,6 @@ namespace MacroMate.View
         protected override void OnDisappearing()
         {
             cancellationTokenSource.Cancel();
-            listener?.Stop();
             Navigation.PopAsync();
             base.OnDisappearing();
         }
@@ -228,7 +240,7 @@ namespace MacroMate.View
             {
                 string new_val = $"{pickerCommand1.SelectedItem}+{pickerCommand2.SelectedItem}+{pickerCommand3.SelectedItem}";
                 string new_path = selectedButton?.Source?.ToString()?.Replace("File:", "").Trim() ?? "default_btn_img.png";
-                if (selectedButton != null && (profileLayout.key_commands[selectedButton.ClassId] != new_val || profileLayout.icons["profile"] != new_path))
+                if (selectedButton != null && (profileLayout.key_commands[selectedButton.ClassId] != new_val || profileLayout.icons[selectedButton.ClassId] != new_path))
                 {
                     profileLayout.key_commands[selectedButton.ClassId] = new_val;
                     profileLayout.icons[selectedButton.ClassId] = new_path;

@@ -38,8 +38,8 @@
 
                 <ImageButton Grid.Row="0" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" />
                 <ImageButton Grid.Row="1" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" />
-                <ImageButton Grid.Row="2" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" BackgroundColor="#aad9bb" ClassId="3" Clicked="OnGridBtnClick" />
-                <ImageButton Grid.Row="3" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" BackgroundColor="#aad9bb" ClassId="4" Clicked="OnGridBtnClick" />
+                <ImageButton Grid.Row="2" x:Name="btn3" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" BackgroundColor="#aad9bb" ClassId="3" Clicked="OnGridBtnClick" />
+                <ImageButton Grid.Row="3" x:Name="btn4" WidthRequest="50" HeightRequest="50" Source="ic_arrow.png" BackgroundColor="#aad9bb" ClassId="4" Clicked="OnGridBtnClick" />
             </Grid>
 
             <Grid x:Name="layoutGrid" Grid.Column="1" HorizontalOptions="Center">
