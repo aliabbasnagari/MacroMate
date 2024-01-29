@@ -75,7 +75,7 @@ public partial class Profiles : ContentPage
 
                 using (TcpClient client = await server.AcceptTcpClientAsync())
                 {
-                    await SendImagesAsync(client, profile.icons);
+                    await SendImagesAsync(client, profile.icons, profile.rows, profile.columns);
                 }
             }
         }
@@ -85,28 +85,33 @@ public partial class Profiles : ContentPage
         }
     }
 
-    private async Task SendImagesAsync(TcpClient client, Dictionary<string, string> icons)
+    private async Task SendImagesAsync(TcpClient client, Dictionary<string, string> icons, int rows, int cols)
     {
         try
         {
-            NetworkStream networkStream = client.GetStream();
+            string EM = "<---[EM]--->";
+            byte[] EMB = Encoding.UTF8.GetBytes(EM);
 
-            foreach (var imagePath in icons)
+            using (NetworkStream stream = client.GetStream())
             {
-                using (FileStream fileStream = File.OpenRead(imagePath.Value))
-                {
-                    byte[] buffer = new byte[70];
-                    int bytesRead;
+                byte[] lengthBytes = BitConverter.GetBytes(rows);
+                Array.Reverse(lengthBytes);
+                stream.Write(lengthBytes, 0, lengthBytes.Length);
 
-                    while ((bytesRead = await fileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                    {
-                        await networkStream.WriteAsync(buffer, 0, bytesRead);
-                    }
+                lengthBytes = BitConverter.GetBytes(cols);
+                Array.Reverse(lengthBytes);
+                stream.Write(lengthBytes, 0, lengthBytes.Length);
+
+                foreach (var img in icons)
+                {
+                    byte[] file = File.ReadAllBytes(img.Value);
+                    lengthBytes = BitConverter.GetBytes(file.Length);
+                    //Dispatcher.Dispatch(()=> DisplayAlert($"{lengthBytes.Length}", $"{file.Length}", "OK"));
+                    Array.Reverse(lengthBytes);
+                    stream.Write(lengthBytes, 0, lengthBytes.Length);
+                    await stream.WriteAsync(file, 0, file.Length);
+                    await stream.FlushAsync();
                     await Task.Delay(100);
-                    string endMarker = "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END_MARKER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"; 
-                    byte[] endMarkerByte = Encoding.UTF8.GetBytes(endMarker);
-                    await networkStream.WriteAsync(endMarkerByte, 0, endMarkerByte.Length);
-                    await networkStream.FlushAsync();
                 }
             }
         }

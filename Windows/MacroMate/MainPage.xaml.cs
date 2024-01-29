@@ -14,6 +14,7 @@ namespace MacroMate
             InitializeComponent();
             editorIP.Text = GetLocalIpAddress();
             editorPort.Text = "7214";
+            //DisplayAlert("SIZE", $"{Encoding.UTF8.GetBytes("{[EM]}").Length}", "OK");
         }
 
         private void StartConnection(object sender, EventArgs e)
