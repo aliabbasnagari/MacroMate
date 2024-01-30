@@ -84,7 +84,7 @@ public partial class Profiles : ContentPage
             Dispatcher.Dispatch(() => DisplayAlert("Here 1", ex.Message, "ok"));
         }
     }
-
+    /*
     private async Task SendImagesAsync(TcpClient client, Dictionary<string, string> icons, int rows, int cols)
     {
         try
@@ -106,12 +106,46 @@ public partial class Profiles : ContentPage
                 {
                     byte[] file = File.ReadAllBytes(img.Value);
                     lengthBytes = BitConverter.GetBytes(file.Length);
-                    //Dispatcher.Dispatch(()=> DisplayAlert($"{lengthBytes.Length}", $"{file.Length}", "OK"));
                     Array.Reverse(lengthBytes);
                     stream.Write(lengthBytes, 0, lengthBytes.Length);
                     await stream.WriteAsync(file, 0, file.Length);
                     await stream.FlushAsync();
-                    await Task.Delay(100);
+                    await Task.Delay(150);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+    */
+
+    private async Task SendImagesAsync(TcpClient client, Dictionary<string, string> icons, int rows, int cols)
+    {
+        try
+        {
+            using (NetworkStream stream = client.GetStream())
+            using (var streamer = new BufferedStream(stream))
+            {
+                byte[] lengthBytes = BitConverter.GetBytes(rows);
+                Array.Reverse(lengthBytes);
+                await streamer.WriteAsync(lengthBytes, 0, lengthBytes.Length);
+
+                lengthBytes = BitConverter.GetBytes(cols);
+                Array.Reverse(lengthBytes);
+                await streamer.WriteAsync(lengthBytes, 0, lengthBytes.Length);
+
+                foreach (var img in icons)
+                {
+                    byte[] file = File.ReadAllBytes(img.Value);
+                    lengthBytes = BitConverter.GetBytes(file.Length);
+                    Array.Reverse(lengthBytes);
+                    await streamer.WriteAsync(lengthBytes, 0, lengthBytes.Length);
+
+                    await streamer.WriteAsync(file, 0, file.Length);
+                    await streamer.FlushAsync();
+                    await Task.Delay(120);
                 }
             }
         }

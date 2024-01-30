@@ -14,10 +14,15 @@ import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.BufferedInputStream
+import java.io.BufferedReader
 import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.IOException
+import java.io.InputStreamReader
 import java.net.Socket
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 
 class DataActivity : AppCompatActivity() {
     private var IP: String? = null
@@ -36,7 +41,7 @@ class DataActivity : AppCompatActivity() {
         var btn = findViewById<Button>(R.id.btnGet)
         btn.setOnClickListener {
             Toast.makeText(this, bitmaps.size.toString(), Toast.LENGTH_SHORT).show();
-            for (img in bitmaps) {
+            /*for (img in bitmaps) {
                 val imageView = ImageView(this)
                 imageView.setImageBitmap(img)
                 imageView.minimumWidth = 100
@@ -44,7 +49,7 @@ class DataActivity : AppCompatActivity() {
                 imageView.maxWidth = 100
                 imageView.maxHeight = 100
                 llout?.addView(imageView)
-            }
+            }*/
             receiveImages()
         }
 
@@ -73,48 +78,94 @@ class DataActivity : AppCompatActivity() {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
 
+    /*
+        private fun receiveImages() {
+            CoroutineScope(Dispatchers.IO).launch {
+                val endMarker = "<---[EM]--->"
+                try {
+                    val socket = Socket(IP, PORT)
+                    val inputStream = socket.getInputStream()
+
+                    val lengthBytes = ByteArray(4)
+                    inputStream.read(lengthBytes)
+                    val numRows = ByteBuffer.wrap(lengthBytes).int
+                    Log.d("DDD", numRows.toString())
+                    inputStream.read(lengthBytes)
+                    val numCols = ByteBuffer.wrap(lengthBytes).int
+                    Log.d("DDD", numCols.toString())
+
+                    for (i in 1..numRows * numCols + 2) {
+
+                        val byr = inputStream.read(lengthBytes)
+                        val imgSize = ByteBuffer.wrap(lengthBytes).int
+                        Log.d("IMG", imgSize.toString())
+
+                        val imgData = ByteArray(imgSize)
+                        inputStream.read(imgData)
+
+                        val bmp = BitmapFactory.decodeByteArray(imgData, 0, imgSize)
+                        runOnUiThread {
+                            val imageView = ImageView(applicationContext)
+                            imageView.setImageBitmap(bmp)
+                            imageView.minimumWidth = 100
+                            imageView.minimumHeight = 100
+                            imageView.maxWidth = 100
+                            imageView.maxHeight = 100
+                            llout?.addView(imageView)
+                        }
+                       // Thread.sleep(150)
+                    }
+
+
+
+
+                    socket.close()
+                } catch (ex: Exception) {
+
+                }
+            }
+        }
+    */
     private fun receiveImages() {
         CoroutineScope(Dispatchers.IO).launch {
-            val endMarker =
-                "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<END_MARKER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
             try {
                 val socket = Socket(IP, PORT)
-                val inputStream = socket.getInputStream()
-                val dataInputStream = DataInputStream(inputStream)
-                var buffer = ByteArray(70)
-                var bytesRead: Int
+                val inputStream = BufferedInputStream(socket.getInputStream())
 
-                var byteArrayOutputStream = ByteArrayOutputStream()
-                while (true) {
-                    bytesRead = dataInputStream.read(buffer, 0, buffer.size)
-                    if (bytesRead == -1) break
+                val lenByt = ByteArray(4)
+                var bRd = inputStream.read(lenByt)
+                val numRows = ByteBuffer.wrap(lenByt.copyOf(bRd)).int
+                Log.d("DDD", numRows.toString())
 
-                    if (String(buffer.copyOf(bytesRead), Charsets.UTF_8).contains(endMarker)) {
-                        val byteArray = byteArrayOutputStream.toByteArray()
-                        try {
-                            val bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
-                            bitmaps.add(bitmap)
-                            Log.d(
-                                "DONE",
-                                "${byteArray.size}, ${if (bitmap == null) "NULL" else "IMAGE"}"
-                            )
-                        } catch (ex: Exception) {
-                            ex.localizedMessage?.let { Log.e("EXC", it) }
-                        } finally {
-                            byteArrayOutputStream = ByteArrayOutputStream()
-                            buffer = ByteArray(70)
-                        }
-                    } else {
-                        byteArrayOutputStream.write(buffer, 0, bytesRead)
+                bRd = inputStream.read(lenByt)
+                val numCols = ByteBuffer.wrap(lenByt.copyOf(bRd)).int
+                Log.d("DDD", numCols.toString())
+
+                for (i in 1..numRows * numCols + 2) {
+                    Thread.sleep(200)
+                    bRd = inputStream.read(lenByt)
+                    val imgSize = ByteBuffer.wrap(lenByt.copyOf(bRd)).int
+                    Log.d("IMG", imgSize.toString())
+
+                    val imgData = ByteArray(imgSize)
+                    inputStream.read(imgData, 0, imgSize)
+
+                    val bmp = BitmapFactory.decodeByteArray(imgData, 0, imgSize)
+                    runOnUiThread {
+                        val imageView = ImageView(applicationContext)
+                        imageView.setImageBitmap(bmp)
+                        imageView.minimumWidth = 100
+                        imageView.minimumHeight = 100
+                        imageView.maxWidth = 100
+                        imageView.maxHeight = 100
+                        llout?.addView(imageView)
                     }
                 }
-
-                byteArrayOutputStream.close()
-                dataInputStream.close()
                 socket.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
+            } catch (ex: Exception) {
+                Log.e("Error", ex.message ?: "Unknown error")
             }
         }
     }
+
 }
