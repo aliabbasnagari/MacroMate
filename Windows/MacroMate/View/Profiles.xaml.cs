@@ -145,7 +145,6 @@ public partial class Profiles : ContentPage
 
                     await streamer.WriteAsync(file, 0, file.Length);
                     await streamer.FlushAsync();
-                    await Task.Delay(120);
                 }
             }
         }
