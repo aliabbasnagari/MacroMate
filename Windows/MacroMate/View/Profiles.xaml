@@ -52,10 +52,10 @@
                 Clicked="btnCreate_Clicked"/>
         </HorizontalStackLayout>
 
-        <ScrollView>
+        <ScrollView HeightRequest="400">
             <VerticalStackLayout
                 x:Name="vsLayout"
-                Padding="50" >
+                Padding="10" >
             </VerticalStackLayout>
         </ScrollView>
 

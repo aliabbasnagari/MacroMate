@@ -1,33 +1,22 @@
 package com.alinagari.macromate
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
 import android.widget.GridLayout
 import android.widget.ImageButton
 import android.widget.RelativeLayout
-import androidx.annotation.RequiresApi
-import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
-import androidx.core.view.setPadding
 import com.alinagari.macromate.databinding.ActivityMacroBinding
-import com.alinagari.macromate.databinding.ActivityMainBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.net.Socket
-import java.util.Scanner
 
 class MacroActivity : AppCompatActivity() {
 
@@ -43,7 +32,10 @@ class MacroActivity : AppCompatActivity() {
 
         IP = intent.getStringExtra("IP")
         PORT = intent.getIntExtra("PORT", 0)
-        val dataList = intent.getStringArrayListExtra("IMAGES")
+        val rows = intent.getIntExtra("ROWS", 0)
+        val cols = intent.getIntExtra("COLS", 0)
+        val bitmaps = (application as AppBitmap).bitmaps
+
         socketMessage("connected")
 
         val macroBtns = Array(4) { RelativeLayout(this) }
@@ -58,9 +50,12 @@ class MacroActivity : AppCompatActivity() {
         macroBtns[3].setOnClickListener { socketMessage("4") }
 
 
+        var icoIdx = 1
+
+
         val gridBtn = binding.gridBtn
-        gridBtn.rowCount = 2
-        gridBtn.columnCount = 5
+        gridBtn.rowCount = rows
+        gridBtn.columnCount = cols
 
         var msgIdx = 5
         for (i in 0 until gridBtn.rowCount) {
@@ -68,6 +63,9 @@ class MacroActivity : AppCompatActivity() {
                 val button = ImageButton(this)
                 button.setBackgroundResource(R.drawable.btn_macro)
                 button.setImageBitmap(getResizedBitmap(this, R.drawable.ic_arrow, 30, 30))
+
+                if(bitmaps.size > icoIdx) button.setImageBitmap(bitmaps[++icoIdx])
+
                 button.layoutParams = GridLayout.LayoutParams().apply {
                     width = 0
                     height = 0
@@ -151,10 +149,5 @@ class MacroActivity : AppCompatActivity() {
             }
         }
         return inSampleSize
-    }
-
-    private fun convertStringToBitmap(bitmapString: String): Bitmap {
-        val decodedBytes = Base64.decode(bitmapString, Base64.DEFAULT)
-        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
     }
 }

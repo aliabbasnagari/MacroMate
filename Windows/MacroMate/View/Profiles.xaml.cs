@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -24,7 +25,7 @@ public partial class Profiles : ContentPage
         foreach (var prof in db.profiles)
         {
             var get_icon = (File.Exists(prof.Value.profile_icon) ? prof.Value.profile_icon : "default_app_img.png");
-            Image img = new Image();
+            Microsoft.Maui.Controls.Image img = new Microsoft.Maui.Controls.Image();
             img.WidthRequest = 60;
             img.HeightRequest = 60;
             img.Source = get_icon;
@@ -36,7 +37,7 @@ public partial class Profiles : ContentPage
 
             VerticalStackLayout vsl = new VerticalStackLayout();
             vsl.WidthRequest = 200;
-            vsl.HeightRequest = 200;
+            vsl.HeightRequest = 100;
             vsl.BackgroundColor = Colors.Gray;
             vsl.ClassId = $"{prof.Key}";
             vsl.Margin = new Thickness(7);
@@ -84,43 +85,7 @@ public partial class Profiles : ContentPage
             Dispatcher.Dispatch(() => DisplayAlert("Here 1", ex.Message, "ok"));
         }
     }
-    /*
-    private async Task SendImagesAsync(TcpClient client, Dictionary<string, string> icons, int rows, int cols)
-    {
-        try
-        {
-            string EM = "<---[EM]--->";
-            byte[] EMB = Encoding.UTF8.GetBytes(EM);
-
-            using (NetworkStream stream = client.GetStream())
-            {
-                byte[] lengthBytes = BitConverter.GetBytes(rows);
-                Array.Reverse(lengthBytes);
-                stream.Write(lengthBytes, 0, lengthBytes.Length);
-
-                lengthBytes = BitConverter.GetBytes(cols);
-                Array.Reverse(lengthBytes);
-                stream.Write(lengthBytes, 0, lengthBytes.Length);
-
-                foreach (var img in icons)
-                {
-                    byte[] file = File.ReadAllBytes(img.Value);
-                    lengthBytes = BitConverter.GetBytes(file.Length);
-                    Array.Reverse(lengthBytes);
-                    stream.Write(lengthBytes, 0, lengthBytes.Length);
-                    await stream.WriteAsync(file, 0, file.Length);
-                    await stream.FlushAsync();
-                    await Task.Delay(150);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-    }
-    */
-
+  
     private async Task SendImagesAsync(TcpClient client, Dictionary<string, string> icons, int rows, int cols)
     {
         try
@@ -138,7 +103,7 @@ public partial class Profiles : ContentPage
 
                 foreach (var img in icons)
                 {
-                    byte[] file = File.ReadAllBytes(img.Value);
+                    byte[] file = ResizeImage(img.Value, 128,128);//File.ReadAllBytes(img.Value);
                     lengthBytes = BitConverter.GetBytes(file.Length);
                     Array.Reverse(lengthBytes);
                     await streamer.WriteAsync(lengthBytes, 0, lengthBytes.Length);
@@ -152,6 +117,25 @@ public partial class Profiles : ContentPage
         {
             Console.WriteLine($"Error: {ex.Message}");
         }
+    }
+
+    private byte[] ResizeImage(string imagePath, int width, int height)
+    {
+        byte[] resizedImageBytes;
+
+        using (System.Drawing.Image originalImage = System.Drawing.Image.FromFile(imagePath))
+        {
+            using (System.Drawing.Image resizedImage = new Bitmap(originalImage, new System.Drawing.Size(width, height)))
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    resizedImage.Save(ms, originalImage.RawFormat);
+                    resizedImageBytes = ms.ToArray();
+                }
+            }
+        }
+
+        return resizedImageBytes;
     }
 
 }

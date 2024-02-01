@@ -1,34 +1,25 @@
 package com.alinagari.macromate
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.BufferedInputStream
-import java.io.BufferedReader
-import java.io.ByteArrayOutputStream
-import java.io.DataInputStream
 import java.io.IOException
-import java.io.InputStreamReader
 import java.net.Socket
 import java.nio.ByteBuffer
-import java.nio.ByteOrder
 
 class DataActivity : AppCompatActivity() {
     private var IP: String? = null
     private var PORT: Int = 0
     private var llout: LinearLayout? = null
-    val bitmaps = mutableListOf<Bitmap?>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data)
@@ -40,16 +31,6 @@ class DataActivity : AppCompatActivity() {
 
         var btn = findViewById<Button>(R.id.btnGet)
         btn.setOnClickListener {
-            Toast.makeText(this, bitmaps.size.toString(), Toast.LENGTH_SHORT).show();
-            /*for (img in bitmaps) {
-                val imageView = ImageView(this)
-                imageView.setImageBitmap(img)
-                imageView.minimumWidth = 100
-                imageView.minimumHeight = 100
-                imageView.maxWidth = 100
-                imageView.maxHeight = 100
-                llout?.addView(imageView)
-            }*/
             receiveImages()
         }
 
@@ -71,61 +52,6 @@ class DataActivity : AppCompatActivity() {
         }
     }
 
-    private fun BitmapToString(bitmap: Bitmap): String {
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-        val byteArray = byteArrayOutputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
-    }
-
-    /*
-        private fun receiveImages() {
-            CoroutineScope(Dispatchers.IO).launch {
-                val endMarker = "<---[EM]--->"
-                try {
-                    val socket = Socket(IP, PORT)
-                    val inputStream = socket.getInputStream()
-
-                    val lengthBytes = ByteArray(4)
-                    inputStream.read(lengthBytes)
-                    val numRows = ByteBuffer.wrap(lengthBytes).int
-                    Log.d("DDD", numRows.toString())
-                    inputStream.read(lengthBytes)
-                    val numCols = ByteBuffer.wrap(lengthBytes).int
-                    Log.d("DDD", numCols.toString())
-
-                    for (i in 1..numRows * numCols + 2) {
-
-                        val byr = inputStream.read(lengthBytes)
-                        val imgSize = ByteBuffer.wrap(lengthBytes).int
-                        Log.d("IMG", imgSize.toString())
-
-                        val imgData = ByteArray(imgSize)
-                        inputStream.read(imgData)
-
-                        val bmp = BitmapFactory.decodeByteArray(imgData, 0, imgSize)
-                        runOnUiThread {
-                            val imageView = ImageView(applicationContext)
-                            imageView.setImageBitmap(bmp)
-                            imageView.minimumWidth = 100
-                            imageView.minimumHeight = 100
-                            imageView.maxWidth = 100
-                            imageView.maxHeight = 100
-                            llout?.addView(imageView)
-                        }
-                       // Thread.sleep(150)
-                    }
-
-
-
-
-                    socket.close()
-                } catch (ex: Exception) {
-
-                }
-            }
-        }
-    */
     private fun receiveImages() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -150,18 +76,32 @@ class DataActivity : AppCompatActivity() {
                     val imgData = ByteArray(imgSize)
                     inputStream.read(imgData, 0, imgSize)
 
-                    val bmp = BitmapFactory.decodeByteArray(imgData, 0, imgSize)
-                    runOnUiThread {
-                        val imageView = ImageView(applicationContext)
-                        imageView.setImageBitmap(bmp)
-                        imageView.minimumWidth = 100
-                        imageView.minimumHeight = 100
-                        imageView.maxWidth = 100
-                        imageView.maxHeight = 100
-                        llout?.addView(imageView)
+                    try {
+                        val bmp = BitmapFactory.decodeByteArray(imgData, 0, imgSize)
+                        //bitmaps.add(bmp)
+                        val app = application as AppBitmap
+                        app.bitmaps.add(bmp)
+                        runOnUiThread {
+                            val imageView = ImageView(applicationContext)
+                            imageView.setImageBitmap(bmp)
+                            imageView.minimumWidth = 100
+                            imageView.minimumHeight = 100
+                            imageView.maxWidth = 100
+                            imageView.maxHeight = 100
+                            llout?.addView(imageView)
+                        }
+                    } catch (ex:Exception) {
+                        Log.e("EX", ex.localizedMessage)
                     }
                 }
                 socket.close()
+                val intent = Intent(applicationContext, MacroActivity::class.java)
+                intent.putExtra("IP", IP)
+                intent.putExtra("PORT", PORT)
+                intent.putExtra("ROWS", numRows)
+                intent.putExtra("COLS", numCols)
+                startActivity(intent)
+
             } catch (ex: Exception) {
                 Log.e("Error", ex.message ?: "Unknown error")
             }

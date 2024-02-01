@@ -224,9 +224,9 @@ namespace MacroMate.View
             if (result != null)
             {
                 string newval = $"{result}";
-                if (profileLayout != null && profileLayout.icons["profile"] != newval)
+                if (profileLayout != null && profileLayout.profile_icon != newval)
                 {
-                    profileLayout.icons["profile"] = newval;
+                    profileLayout.profile_icon = newval;
                     profileImage.Source = newval;
                     db.UpdateProfiles();
                     await DisplayAlert("Update", "Done", "Ok");
