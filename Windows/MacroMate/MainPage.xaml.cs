@@ -1,9 +1,9 @@
-﻿using Microsoft.Maui.Controls.Platform;
+﻿using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using MacroMate.View;
 using MacroMate.Data;
+using MacroMate.View;
 
 namespace MacroMate
 {
@@ -14,23 +14,41 @@ namespace MacroMate
             InitializeComponent();
             editorIP.Text = GetLocalIpAddress();
             editorPort.Text = "7214";
-            //DisplayAlert("SIZE", $"{Encoding.UTF8.GetBytes("{[EM]}").Length}", "OK");
         }
 
         private void StartConnection(object sender, EventArgs e)
         {
             lbStatus.Text = "Listening...";
             lbStatus.TextColor = Colors.Orange;
-            Task.Run(ConnectToServer);
+            Task.Run(() => ConnectToServer(editorIP.Text, int.Parse(editorPort.Text)));
         }
 
-        private async Task ConnectToServer()
+        private async Task ConnectToServer(string ip, int port)
         {
+            SocketManager sm = SocketManager.GetInstance();
+            sm.StartServer(ip, port);
+            await sm.GetClient();
+            await sm.ConnectClient();
+
+            bool status = await sm.ConnectClient();
+
+            if(status)
+            {
+                Debug.WriteLine("Client Connection Complete...");
+            } else
+            {
+                Debug.WriteLine("Client Connect Fail...");
+            }
+
+            return;
+
+
+
             using (TcpListener listener = new TcpListener(IPAddress.Parse(editorIP.Text), int.Parse(editorPort.Text)))
             {
                 try
                 {
-                    if (!IPAddress.TryParse(editorIP.Text, out IPAddress? ipAddress) || !int.TryParse(editorPort.Text, out int port))
+                    if (!IPAddress.TryParse(editorIP.Text, out IPAddress? ipAddress))//|| !int.TryParse(editorPort.Text, out int port)
                     {
                         Dispatcher.Dispatch(() => lbStatus.Text = "Invalid IP or Port!");
                         return;
