@@ -21,7 +21,7 @@ import java.util.Scanner
 
 class MainActivity : AppCompatActivity() {
 
-    var img: ImageView? = null
+    private var img: ImageView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)

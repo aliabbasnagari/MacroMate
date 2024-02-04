@@ -61,10 +61,10 @@ class MacroActivity : AppCompatActivity() {
         for (i in 0 until gridBtn.rowCount) {
             for (j in 0 until gridBtn.columnCount) {
                 val button = ImageButton(this)
-                button.setBackgroundResource(R.drawable.btn_macro)
+                button.setBackgroundResource(R.drawable.ic_btn_bg)
                 button.setImageBitmap(getResizedBitmap(this, R.drawable.ic_arrow, 30, 30))
 
-                if(bitmaps.size > icoIdx) button.setImageBitmap(bitmaps[++icoIdx])
+                if (bitmaps.size > icoIdx) button.setImageBitmap(bitmaps[++icoIdx])
 
                 button.layoutParams = GridLayout.LayoutParams().apply {
                     width = 0
